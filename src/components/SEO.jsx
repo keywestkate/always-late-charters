@@ -16,7 +16,7 @@ import Script from 'next/script';
 const BUSINESS = {
   name: 'Always Late Charters',
   url: 'https://www.alwayslatecharters.com',
-  telephone: '+1-305-394-1582', // ⚠️ PLACEHOLDER_PHONE
+  telephone: '+13057432444',
   priceRange: '$$$',
   image: 'https://www.alwayslatecharters.com/assets/boat-photo.jpg',
   description:
