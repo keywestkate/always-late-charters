@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Explicitly ensure AI crawlers are welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://www.alwayslatecharters.com/sitemap.xml
