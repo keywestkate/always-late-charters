@@ -96,7 +96,7 @@ export default function EcoToursPage() {
         {/* Hero */}
         <section className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: "60vh" }}>
           <div className="absolute inset-0"
-            style={{ background: "linear-gradient(135deg, #0d1a0d 0%, #0a1a14 60%, #1a2a1a 100%)" }} />
+            style={{ background: "linear-gradient(135deg, #0e9aa7 0%, #0b7a6a 60%, #0a3d62 100%)" }} />
           <div className="absolute inset-0 opacity-15"
             style={{ backgroundImage: "radial-gradient(circle at 50% 30%, #8B7355 0%, transparent 55%)" }} />
           <div className="relative z-10 text-center px-6 lg:px-14 pt-28 pb-20 max-w-4xl mx-auto">

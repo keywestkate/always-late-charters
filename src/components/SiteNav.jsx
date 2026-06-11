@@ -1,24 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const serif = { fontFamily: "'Cormorant Garamond', Georgia, serif" };
 const sans  = { fontFamily: "'Jost', system-ui, sans-serif" };
-const ACCENT = "#8B7355";
-const TEXT   = "#1A1A18";
+const GOLD  = "#C9A96E";
+const TEXT  = "#1A1A18";
+const TEAL  = "#0E9AA7";
 
-const links = [
-  ["Home",              "/"],
-  ["Meet Capt. Lucas",  "/about"],
-  ["Charters & Rates",  "/charters-rates"],
-  ["Reef Fishing",      "/reef"],
+const trips = [
   ["Offshore Fishing",  "/offshore"],
+  ["Reef & Wreck",      "/reef"],
   ["Shark Fishing",     "/shark"],
+  ["Family Trips",      "/family"],
+  ["Eco Tours",         "/eco-tours"],
+];
+
+const topLinks = [
+  ["Home",        "/"],
+  ["Meet Capt. Lucas", "/about"],
+  ["Contact",     "#contact"],
 ];
 
 export default function SiteNav({ activePage = "" }) {
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen]         = useState(false);
+  const [scrolled, setScrolled]   = useState(false);
+  const [menuOpen, setMenuOpen]   = useState(false);
+  const [tripsOpen, setTripsOpen] = useState(false);
+  const [mTripsOpen, setMTripsOpen] = useState(false);
+  const dropRef = useRef(null);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 60);
@@ -27,96 +36,175 @@ export default function SiteNav({ activePage = "" }) {
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  const linkColor    = scrolled ? TEXT          : "rgba(255,255,255,0.88)";
-  const activeLinkColor = scrolled ? ACCENT     : "rgba(255,255,255,1)";
-  const bgStyle      = scrolled
+  /* close dropdown on outside click */
+  useEffect(() => {
+    const fn = (e) => { if (dropRef.current && !dropRef.current.contains(e.target)) setTripsOpen(false); };
+    document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
+  }, []);
+
+  const linkColor = scrolled ? TEXT : "rgba(255,255,255,0.85)";
+  const activeColor = scrolled ? TEAL : "white";
+  const bgStyle = scrolled
     ? { background: "rgba(247,245,241,0.97)", backdropFilter: "blur(14px)", boxShadow: "0 1px 0 rgba(26,26,24,0.10)" }
     : { background: "transparent" };
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap');`}</style>
-      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
-        style={{ ...bgStyle, padding: scrolled ? "14px 0" : "22px 0" }}>
-        <div className="max-w-screen-xl mx-auto px-6 lg:px-14 flex items-center justify-between">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap');
+        .sitenav-dropdown { animation: dropIn 0.18s ease; }
+        @keyframes dropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+      `}</style>
 
-          {/* Logo */}
-          <a href="/" className="flex items-center gap-3">
-            <img src="/always-late-charters-marathon-key-florida-grouper-logo.jpg"
-              alt="Always Late Charters"
-              className="rounded-full object-cover border transition-all duration-500"
-              style={{ width: scrolled ? "34px" : "40px", height: scrolled ? "34px" : "40px",
-                borderColor: scrolled ? `${ACCENT}55` : "rgba(255,255,255,0.40)" }} />
-            <div className="flex flex-col leading-none">
-              <span className="font-light tracking-[0.18em] uppercase transition-colors duration-500"
-                style={{ ...serif, fontSize: scrolled ? "14px" : "16px",
-                  color: scrolled ? TEXT : "white" }}>
-                Always Late
-              </span>
-              <span className="text-[8px] tracking-[0.42em] uppercase mt-0.5 transition-colors duration-500"
-                style={{ ...sans, color: scrolled ? ACCENT : "rgba(255,255,255,0.65)" }}>
-                Charters · Marathon Key
-              </span>
-            </div>
+      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+        style={{ ...bgStyle, height: scrolled ? "60px" : "72px" }}>
+        <div className="h-full max-w-screen-xl mx-auto px-6 lg:px-10 flex items-center justify-between">
+
+          {/* ── Logo ── */}
+          <a href="/" className="flex items-center gap-2" aria-label="Always Late Charters home">
+            <span style={{ ...serif, fontStyle: "italic", fontWeight: 400,
+              fontSize: scrolled ? "1.35rem" : "1.6rem",
+              color: scrolled ? TEXT : "white",
+              transition: "all 0.4s", lineHeight: 1 }}>
+              Always Late
+            </span>
+            <span className="text-[8px] tracking-[0.42em] uppercase border-l pl-2 hidden sm:inline-block transition-all duration-400"
+              style={{ ...sans, color: scrolled ? "#8B7355" : "rgba(255,255,255,0.55)",
+                borderColor: scrolled ? "rgba(26,26,24,0.20)" : "rgba(255,255,255,0.25)" }}>
+              Charters
+            </span>
           </a>
 
-          {/* Desktop links */}
-          <nav className="hidden lg:flex items-center gap-7">
-            {links.map(([label, href]) => {
+          {/* ── Desktop nav ── */}
+          <nav className="hidden lg:flex items-center gap-6">
+
+            {topLinks.map(([label, href]) => {
               const isActive = activePage === href;
               return (
                 <a key={label} href={href}
-                  className="text-[11px] tracking-[0.18em] uppercase transition-colors duration-300"
-                  style={{ ...sans, color: isActive ? activeLinkColor : linkColor,
-                    borderBottom: isActive ? `1px solid ${scrolled ? ACCENT : "white"}` : "none",
+                  className="text-[11px] tracking-[0.28em] uppercase transition-colors duration-300"
+                  style={{ ...sans, color: isActive ? activeColor : linkColor,
+                    borderBottom: isActive ? `1px solid ${scrolled ? TEAL : "white"}` : "none",
                     paddingBottom: isActive ? "2px" : "0" }}
-                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = scrolled ? ACCENT : "white"; }}
+                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = scrolled ? TEAL : "white"; }}
                   onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = linkColor; }}>
                   {label}
                 </a>
               );
             })}
-            <a href="tel:+13057432444"
-              className="text-[11px] tracking-[0.18em] uppercase px-5 py-2.5 border transition-all duration-300"
-              style={{ ...sans, color: scrolled ? ACCENT : "white",
-                borderColor: scrolled ? `${ACCENT}55` : "rgba(255,255,255,0.45)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = scrolled ? ACCENT : "white";
-                e.currentTarget.style.color = scrolled ? "white" : TEXT; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent";
-                e.currentTarget.style.color = scrolled ? ACCENT : "white"; }}>
-              305-743-2444
+
+            {/* Our Trips dropdown */}
+            <div ref={dropRef} className="relative">
+              <button
+                onClick={() => setTripsOpen(v => !v)}
+                className="flex items-center gap-1 text-[11px] tracking-[0.28em] uppercase transition-colors duration-300"
+                style={{ ...sans, color: trips.some(([,h]) => h === activePage) ? activeColor : linkColor }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = scrolled ? TEAL : "white"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = trips.some(([,h]) => h === activePage) ? activeColor : linkColor; }}>
+                Our Trips
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                  style={{ transform: tripsOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+
+              {tripsOpen && (
+                <div className="sitenav-dropdown absolute top-full left-1/2 mt-3 py-2 min-w-[200px]"
+                  style={{ transform: "translateX(-50%)", background: "rgba(247,245,241,0.99)",
+                    backdropFilter: "blur(16px)", boxShadow: "0 8px 32px rgba(0,0,0,0.14)",
+                    border: "1px solid rgba(26,26,24,0.08)" }}>
+                  {trips.map(([label, href]) => (
+                    <a key={href} href={href}
+                      className="flex items-center px-5 py-3 text-[11px] tracking-[0.22em] uppercase transition-colors duration-200"
+                      style={{ ...sans, color: activePage === href ? TEAL : TEXT }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = TEAL; e.currentTarget.style.background = "rgba(14,154,167,0.06)"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = activePage === href ? TEAL : TEXT; e.currentTarget.style.background = "transparent"; }}>
+                      {label}
+                    </a>
+                  ))}
+                  <div style={{ borderTop: "1px solid rgba(26,26,24,0.08)", margin: "4px 0" }} />
+                  <a href="/booking"
+                    className="flex items-center px-5 py-3 text-[11px] tracking-[0.22em] uppercase font-medium transition-colors duration-200"
+                    style={{ ...sans, color: GOLD }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = TEXT; e.currentTarget.style.background = `${GOLD}15`; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = GOLD; e.currentTarget.style.background = "transparent"; }}>
+                    Book a Charter →
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {/* Book Now CTA button */}
+            <a href="/booking"
+              className="text-[11px] tracking-[0.28em] uppercase px-5 py-2.5 transition-all duration-300"
+              style={{ ...sans, color: scrolled ? "#1A1A18" : "white",
+                backgroundColor: scrolled ? GOLD : "transparent",
+                border: scrolled ? `1px solid ${GOLD}` : "1px solid rgba(255,255,255,0.55)" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = GOLD; e.currentTarget.style.color = "#1A1A18"; e.currentTarget.style.borderColor = GOLD; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = scrolled ? GOLD : "transparent"; e.currentTarget.style.color = scrolled ? "#1A1A18" : "white"; e.currentTarget.style.borderColor = scrolled ? GOLD : "rgba(255,255,255,0.55)"; }}>
+              Book Now
             </a>
           </nav>
 
-          {/* Mobile hamburger */}
-          <button onClick={() => setOpen(v => !v)} className="lg:hidden p-1" aria-label="Menu">
+          {/* ── Mobile hamburger ── */}
+          <button onClick={() => setMenuOpen(v => !v)} className="lg:hidden p-1" aria-label="Menu">
             {[0,1,2].map(i => (
-              <span key={i} className="block w-6 h-px my-1.5 transition-all duration-300 origin-center"
+              <span key={i} className="block w-5 h-px my-[5px] transition-all duration-300 origin-center"
                 style={{ backgroundColor: scrolled ? TEXT : "white",
-                  transform: i === 0 && open ? "rotate(45deg) translateY(7px)" :
-                             i === 2 && open ? "rotate(-45deg) translateY(-7px)" : "none",
-                  opacity: i === 1 && open ? 0 : 1 }} />
+                  transform: i === 0 && menuOpen ? "rotate(45deg) translateY(6px)" :
+                             i === 2 && menuOpen ? "rotate(-45deg) translateY(-6px)" : "none",
+                  opacity: i === 1 && menuOpen ? 0 : 1 }} />
             ))}
           </button>
         </div>
 
-        {/* Mobile drawer */}
+        {/* ── Mobile drawer ── */}
         <div className="lg:hidden overflow-hidden transition-all duration-500"
-          style={{ maxHeight: open ? "400px" : "0", opacity: open ? 1 : 0 }}>
-          <div className="px-6 pt-4 pb-7 flex flex-col gap-5 border-t"
+          style={{ maxHeight: menuOpen ? "600px" : "0", opacity: menuOpen ? 1 : 0 }}>
+          <div className="px-6 pt-4 pb-8 flex flex-col gap-1 border-t"
             style={{ background: "rgba(247,245,241,0.99)", borderColor: "rgba(26,26,24,0.08)" }}>
-            {links.map(([label, href]) => (
-              <a key={label} href={href} className="text-sm tracking-[0.18em] uppercase transition-colors"
-                style={{ ...sans, color: activePage === href ? ACCENT : TEXT }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = ACCENT)}
-                onMouseLeave={(e) => (e.currentTarget.style.color = activePage === href ? ACCENT : TEXT)}>
-                {label}
-              </a>
-            ))}
-            <a href="tel:+13057432444" className="text-sm self-start"
-              style={{ ...sans, color: ACCENT }}>
-              305-743-2444
+
+            <a href="/" className="py-3 text-[12px] tracking-[0.22em] uppercase border-b"
+              style={{ ...sans, color: activePage === "/" ? TEAL : TEXT, borderColor: "rgba(26,26,24,0.06)" }}>Home</a>
+
+            <a href="/about" className="py-3 text-[12px] tracking-[0.22em] uppercase border-b"
+              style={{ ...sans, color: activePage === "/about" ? TEAL : TEXT, borderColor: "rgba(26,26,24,0.06)" }}>Meet Capt. Lucas</a>
+
+            {/* Mobile trips section */}
+            <div>
+              <button onClick={() => setMTripsOpen(v => !v)}
+                className="w-full flex items-center justify-between py-3 text-[12px] tracking-[0.22em] uppercase border-b"
+                style={{ ...sans, color: TEXT, borderColor: "rgba(26,26,24,0.06)" }}>
+                Our Trips
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                  style={{ transform: mTripsOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              {mTripsOpen && (
+                <div className="pl-4 flex flex-col">
+                  {trips.map(([label, href]) => (
+                    <a key={href} href={href} className="py-2.5 text-[11px] tracking-[0.22em] uppercase"
+                      style={{ ...sans, color: activePage === href ? TEAL : "#6B6B60" }}>
+                      {label}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <a href="#contact" className="py-3 text-[12px] tracking-[0.22em] uppercase border-b"
+              style={{ ...sans, color: TEXT, borderColor: "rgba(26,26,24,0.06)" }}>Contact</a>
+
+            <a href="/booking"
+              className="mt-4 py-3.5 text-center text-[12px] tracking-[0.28em] uppercase"
+              style={{ ...sans, color: "#1A1A18", backgroundColor: GOLD }}>
+              Book Now
             </a>
+
+            <a href="tel:+13057432444" className="mt-3 text-center text-[12px]"
+              style={{ ...sans, color: "#8B7355" }}>305-743-2444</a>
           </div>
         </div>
       </header>

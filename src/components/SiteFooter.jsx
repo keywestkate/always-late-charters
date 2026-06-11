@@ -17,7 +17,7 @@ export default function SiteFooter() {
   return (
     <footer style={{ backgroundColor: BG, borderTop: "1px solid rgba(26,26,24,0.08)" }}>
       <div className="max-w-screen-xl mx-auto px-6 lg:px-14 pt-14 pb-8">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 pb-10 mb-8 border-b"
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10 pb-10 mb-8 border-b"
           style={{ borderColor: "rgba(26,26,24,0.08)" }}>
 
           {/* Brand */}

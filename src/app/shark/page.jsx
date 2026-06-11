@@ -65,7 +65,7 @@ export default function SharkFishingPage() {
         {/* Hero */}
         <section className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: "60vh" }}>
           <div className="absolute inset-0"
-            style={{ background: "linear-gradient(135deg, #1a0d0d 0%, #2a1010 60%, #1a1a0d 100%)" }} />
+            style={{ background: "linear-gradient(135deg, #1a2a3a 0%, #0a3d62 60%, #0e6b8a 100%)" }} />
           <div className="absolute inset-0 opacity-15"
             style={{ backgroundImage: "radial-gradient(circle at 70% 40%, #8B7355 0%, transparent 55%)" }} />
           <div className="relative z-10 text-center px-6 lg:px-14 pt-28 pb-20 max-w-4xl mx-auto">
