@@ -63,8 +63,9 @@ export default function SiteNav({ activePage = "" }) {
 
           {/* ── Logo ── */}
           <a href="/" className="flex items-center gap-2" aria-label="Always Late Charters home">
-            <span style={{ ...serif, fontStyle: "italic", fontWeight: 400,
-              fontSize: scrolled ? "1.35rem" : "1.6rem",
+            <span style={{ ...sans, fontStyle: "normal", fontWeight: 700,
+              fontSize: scrolled ? "1.05rem" : "1.2rem",
+              letterSpacing: "0.12em", textTransform: "uppercase",
               color: scrolled ? TEXT : "white",
               transition: "all 0.4s", lineHeight: 1 }}>
               Always Late
